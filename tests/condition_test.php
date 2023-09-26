@@ -15,11 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for the other completion condition.
- *
  * @package availability_otherenrolled
- * @copyright MU DOT MY PLT <support@mu.my>
+ * @author Andrew Hancox <andrewdchancox@googlemail.com>
+ * @author Open Source Learning <enquiries@opensourcelearning.co.uk>
+ * @link https://opensourcelearning.co.uk
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2023, Andrew Hancox
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -29,13 +30,6 @@ use availability_otherenrolled\condition;
 global $CFG;
 require_once($CFG->libdir . '/completionlib.php');
 
-/**
- * Unit tests for the completion condition.
- *
- * @package availability_otherenrolled
- * @copyright MU DOT MY PLT <support@mu.my>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class availability_otherenrolled_condition_testcase extends advanced_testcase {
     /**
      * include class needed
