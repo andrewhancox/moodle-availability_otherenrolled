@@ -26,7 +26,8 @@ M.availability_otherenrolled.form.getNode = function (json) {
     var html = '<span class="col-form-label p-r-1"> ' + M.util.get_string('title', 'availability_otherenrolled') + '</span>' +
         ' <span class="availability-group form-group"><label>' +
         '<span class="accesshide">' + M.util.get_string('label_course', 'availability_otherenrolled') + ' </span>' +
-        '<select class="custom-select" name="course" title="' + M.util.get_string('label_course', 'availability_otherenrolled') + '">' +
+        '<select class="custom-select" name="course" title="' + M.util.get_string('label_course', 'availability_otherenrolled') +
+        '">' +
         '<option value="0">' + M.util.get_string('choosedots', 'moodle') + '</option>';
     for (var i = 0; i < this.courses.length; i++) {
         var course = this.courses[i];
