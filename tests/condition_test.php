@@ -152,17 +152,4 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
         $this->assertStringContainsString('Test course 2', $information);
 
     }
-
-    /**
-     * Tests the update_dependency_id() function.
-     */
-    public function test_update_dependency_id() {
-        $cond = new condition((object)array(
-            'course' => 123));
-        $this->assertFalse($cond->update_dependency_id('frogs', 123, 456));
-        $this->assertFalse($cond->update_dependency_id('course_modules', 12, 34));
-        $this->assertTrue($cond->update_dependency_id('course_modules', 123, 456));
-        $after = $cond->save();
-        $this->assertEquals(456, $after->course);
-    }
 }

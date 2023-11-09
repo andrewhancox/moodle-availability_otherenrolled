@@ -26,6 +26,7 @@
 namespace availability_otherenrolled;
 
 use core_availability\info;
+use restore_ui;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/completionlib.php');
@@ -67,7 +68,12 @@ class condition extends \core_availability\condition {
     public function is_available($not, info $info, $grabthelot, $userid) {
         $course = $this->courseid;
 
-        if (is_enrolled(\context_course::instance($course), $userid)) {
+        $context_course = \context_course::instance($course, IGNORE_MISSING);
+
+        if (empty($context_course)) {
+            debugging(get_string('missingcourse', 'availability_otherenrolled'));
+            $allow = false;
+        } else if (is_enrolled($context_course, $userid)) {
             $allow = true;
         } else {
             $allow = false;
@@ -93,37 +99,14 @@ class condition extends \core_availability\condition {
         return get_string($str . 'enrolled', 'availability_otherenrolled', $modname);
     }
 
-    protected function get_debug_string() {
-        return 'course' . $this->courseid;
-    }
-
     public function update_after_restore($restoreid, $courseid, \base_logger $logger, $name) {
-        global $DB;
-        $rec = \restore_dbops::get_backup_ids_record($restoreid, 'course_module', $this->courseid);
-        if (!$rec || !$rec->newitemid) {
-            // If we are on the same course (e.g. duplicate) then we can just
-            // use the existing one.
-            if ($DB->record_exists('course_modules',
-                array('id' => $this->courseid, 'course' => $courseid))) {
-                return false;
-            }
-            // Otherwise it's a warning.
-            $this->courseid = 0;
-            $logger->process('Restored item (' . $name .
-                ') has availability condition on module that was not restored',
-                \backup::LOG_WARNING);
-        } else {
-            $this->courseid = (int)$rec->newitemid;
-        }
+        $logger->process('Restored item (' . $name .
+            ') has availability condition on course that may need reconfiguring.',
+            \backup::LOG_WARNING);
         return true;
     }
 
-    public function update_dependency_id($table, $oldid, $newid) {
-        if ($table === 'course_modules' && (int)$this->courseid === (int)$oldid) {
-            $this->courseid = $newid;
-            return true;
-        } else {
-            return false;
-        }
+    protected function get_debug_string() {
+        return 'course' . $this->courseid;
     }
 }

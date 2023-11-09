@@ -27,6 +27,7 @@ $string['description'] = 'Require students to be enrolled on another course .';
 $string['error_selectcourseid'] = 'You must select an course for the enrollment condition.';
 $string['label_course'] = 'Activity or resource';
 $string['missing'] = '(Missing activity)';
+$string['missingcourse'] = 'Availability condition depends on a missing course.';
 $string['pluginname'] = 'Restriction by other course enrollment';
 $string['requires_not_enrolled'] = 'You have not enrolled on course <strong>{$a}</strong>';
 $string['requires_enrolled'] = 'You have enrolled on course <strong>{$a}</strong>';
