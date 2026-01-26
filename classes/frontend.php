@@ -32,6 +32,7 @@ class frontend extends \core_availability\frontend {
      * @var string IDs of course and section for cache (if any)
      */
     protected $cachekey = '';
+    protected $cacheinitparams;
 
     protected function get_javascript_strings() {
         return array('label_course');
