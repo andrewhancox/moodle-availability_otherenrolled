@@ -29,4 +29,3 @@ $plugin->version = 2023042100;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires = 2019051100;
 $plugin->component = 'availability_otherenrolled';
-

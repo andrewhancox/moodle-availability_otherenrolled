@@ -35,34 +35,37 @@ class frontend extends \core_availability\frontend {
     protected $cacheinitparams;
 
     protected function get_javascript_strings() {
-        return array('label_course');
+        return ['label_course'];
     }
 
-    protected function get_javascript_init_params($course, \cm_info $cm = null,
-            \section_info $section = null) {
+    protected function get_javascript_init_params(
+        $course,
+        \cm_info $cm = null,
+        \section_info $section = null
+    ) {
         // Use cached result if available. The cache is just because we call it
         // twice (once from allow_add) so it's nice to avoid doing all the
         // print_string calls twice.
         $cachekey = $course->id . ',' . ($cm ? $cm->id : '') . ($section ? $section->id : '');
         if ($cachekey !== $this->cachekey) {
             $context = \context_course::instance($course->id);
-            //get all course name
-            $datcourses = array();
+            // get all course name
+            $datcourses = [];
             global $DB;
             $sql2 = "SELECT * FROM {course} 
                     ORDER BY fullname ASC";
             $other = $DB->get_records_sql($sql2);
             foreach ($other as $othercourse) {
-                //disable not created course and default course
-                if(($othercourse->category > 0) && ($othercourse->id != $course->id)){
-                        $datcourses[] = (object)array(
+                // disable not created course and default course
+                if (($othercourse->category > 0) && ($othercourse->id != $course->id)) {
+                        $datcourses[] = (object)[
                             'id' => $othercourse->id,
-                            'name' => format_string($othercourse->fullname, true, array('context' => $context))
-                        );
+                            'name' => format_string($othercourse->fullname, true, ['context' => $context]),
+                        ];
                 }
             }
             $this->cachekey = $cachekey;
-            $this->cacheinitparams = array($datcourses);
+            $this->cacheinitparams = [$datcourses];
         }
         return $this->cacheinitparams;
     }

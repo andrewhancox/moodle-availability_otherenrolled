@@ -62,7 +62,7 @@ class condition extends \core_availability\condition {
      * @param int $courseid Course id of other activity
      */
     public static function get_json($courseid) {
-        return (object)array('type' => 'otherenrolled', 'course' => (int)$courseid);
+        return (object)['type' => 'otherenrolled', 'course' => (int)$courseid];
     }
 
     public function is_available($not, info $info, $grabthelot, $userid) {
@@ -100,9 +100,11 @@ class condition extends \core_availability\condition {
     }
 
     public function update_after_restore($restoreid, $courseid, \base_logger $logger, $name) {
-        $logger->process('Restored item (' . $name .
+        $logger->process(
+            'Restored item (' . $name .
             ') has availability condition on course that may need reconfiguring.',
-            \backup::LOG_WARNING);
+            \backup::LOG_WARNING
+        );
         return true;
     }
 

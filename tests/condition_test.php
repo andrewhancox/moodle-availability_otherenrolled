@@ -23,14 +23,18 @@
  * @copyright 2023, Andrew Hancox
  */
 
+namespace availability_otherenrolled;
+
 defined('MOODLE_INTERNAL') || die();
 
-use availability_otherenrolled\condition;
+use advanced_testcase;
+use core\exception\coding_exception;
+use stdClass;
 
 global $CFG;
 require_once($CFG->libdir . '/completionlib.php');
 
-class availability_otherenrolled_condition_testcase extends advanced_testcase {
+final class condition_test extends advanced_testcase {
     /**
      * include class needed
      */
@@ -38,12 +42,13 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
         // include class information mock to use.
         global $CFG;
         require_once($CFG->dirroot . '/availability/tests/fixtures/mock_info.php');
+        parent::setUp();
     }
 
     /**
      * Tests constructing and using condition as part of tree.
      */
-    public function test_in_tree() {
+    public function test_in_tree(): void {
         global $USER, $CFG;
         $this->resetAfterTest();
 
@@ -52,13 +57,12 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
         $CFG->enablecompletion = true;
         $CFG->enableavailability = true;
         $generator = $this->getDataGenerator();
-        $course = $generator->create_course(array('enablecompletion' => 1));
+        $course = $generator->create_course(['enablecompletion' => 1]);
 
         $info = new \core_availability\mock_info($course, $USER->id);
 
-
-        $structure = (object)array('op' => '|', 'show' => true, 'c' => array(
-            (object)array('type' => 'otherenrolled', 'course' => (int)$course->id)));
+        $structure = (object)['op' => '|', 'show' => true, 'c' => [
+            (object)['type' => 'otherenrolled', 'course' => (int)$course->id]]];
         $tree = new \core_availability\tree($structure);
 
         // Initial check (user has not completed activity).
@@ -76,7 +80,7 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
      * Tests the constructor including error conditions. Also tests the
      * string conversion feature (intended for debugging only).
      */
-    public function test_constructor() {
+    public function test_constructor(): void {
         // No parameters.
         $structure = new stdClass();
         try {
@@ -103,8 +107,8 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
     /**
      * Tests the save() function.
      */
-    public function test_save() {
-        $structure = (object)array('course' => 42);
+    public function test_save(): void {
+        $structure = (object)['course' => 42];
         $cond = new condition($structure);
         $structure->type = 'otherenrolled';
         $this->assertEquals($structure, $cond->save());
@@ -113,7 +117,7 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
     /**
      * Tests the is_available and get_description functions.
      */
-    public function test_usage() {
+    public function test_usage(): void {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/mod/assign/locallib.php');
         $this->resetAfterTest();
@@ -122,8 +126,8 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
         $CFG->enablecompletion = true;
         $CFG->enableavailability = true;
         $generator = $this->getDataGenerator();
-        $course = $generator->create_course(array('enablecompletion' => 1));
-        $course2 = $generator->create_course(array('enablecompletion' => 1));
+        $course = $generator->create_course(['enablecompletion' => 1]);
+        $course2 = $generator->create_course(['enablecompletion' => 1]);
         $user = $generator->create_user();
         $generator->enrol_user($user->id, $course->id);
         $this->setUser($user);
@@ -131,8 +135,8 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
         $info = new \core_availability\mock_info($course, $user->id);
 
         // LENGKAP state (false), positif dan TIDAK.
-        $cond = new condition((object)array(
-            'course' => (int)$course2->id));
+        $cond = new condition((object)[
+            'course' => (int)$course2->id]);
         $this->assertFalse($cond->is_available(false, $info, true, $user->id));
         $information = $cond->get_description(false, false, $info);
         $information = \core_availability\info::format_info($information, $course);
@@ -142,14 +146,13 @@ class availability_otherenrolled_condition_testcase extends advanced_testcase {
 
         $generator->enrol_user($user->id, $course2->id);
 
-        $cond = new condition((object)array(
-            'course' => (int)$course2->id));
+        $cond = new condition((object)[
+            'course' => (int)$course2->id]);
         $this->assertTrue($cond->is_available(false, $info, true, $user->id));
         $this->assertFalse($cond->is_available(true, $info, true, $user->id));
         $information = $cond->get_description(false, true, $info);
         $information = \core_availability\info::format_info($information, $course);
         $this->assertStringContainsString('You have not enrolled on course', $information);
         $this->assertStringContainsString('Test course 2', $information);
-
     }
 }
